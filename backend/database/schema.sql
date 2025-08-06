@@ -33,8 +33,6 @@ CREATE TABLE vehicles (
   is_available BOOLEAN DEFAULT TRUE
 );
 
-
-
 CREATE TABLE bookings (
   booking_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -61,53 +59,6 @@ CREATE TABLE reviews (
 
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (car_id) REFERENCES vehicles(car_id)
-);
-
--- available on for each car
--- each add on has a specific amount
-CREATE TABLE addons (
-  addon_id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  description TEXT,
-  price DECIMAL(10, 2) NOT NULL
-);
-
--- addons linked to the vehicle table and the type of addons in the addons table
-CREATE TABLE vehicle_addons (
-  vehicle_id INT,
-  addon_id INT,
-  PRIMARY KEY (vehicle_id, addon_id),
-  FOREIGN KEY (vehicle_id) REFERENCES vehicles(car_id),
-  FOREIGN KEY (addon_id) REFERENCES addons(addon_id)
-);
-
--- booking of each user, which is connected to the bookings table and the addons table
-CREATE TABLE booking_addons (
-  booking_id INT,
-  addon_id INT,
-  PRIMARY KEY (booking_id, addon_id),
-  FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
-  FOREIGN KEY (addon_id) REFERENCES addons(addon_id)
-);
-
-CREATE TABLE cart (
-  cart_id INT PRIMARY KEY AUTO_INCREMENT,
-  user_id INT NOT NULL,
-  car_id INT NOT NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (car_id) REFERENCES vehicles(car_id)
-);
-
-CREATE TABLE cart_addons (
-  cart_id INT NOT NULL,
-  addon_id INT NOT NULL,
-  PRIMARY KEY (cart_id, addon_id),
-  FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
-  FOREIGN KEY (addon_id) REFERENCES addons(addon_id)
 );
 
 CREATE TABLE payments (

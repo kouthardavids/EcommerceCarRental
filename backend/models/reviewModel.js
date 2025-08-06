@@ -31,7 +31,6 @@ const Review = {
             comment,
             review_date: new Date().toISOString()
         };
-
     }
 }
 

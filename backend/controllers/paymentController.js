@@ -123,4 +123,3 @@ export const cancelPayment = async (req, res) => {
     }
 
 }
-
