@@ -32,7 +32,7 @@ const Payment = {
 
     // refunding payment
    
-    async processRefund(payment_id, refund_reason = "Customer request") {
+    async processRefund(payment_id, refund_reason, refund_amount = "Customer request") {
     // 1. Fetch payment with days since payment
     const [rows] = await db.query(`
         SELECT *, DATEDIFF(NOW(), payment_date) AS days_since_payment
@@ -59,6 +59,10 @@ const Payment = {
         throw new Error('REFUND_AMOUNT_EXCEEDS_PAYMENT');
     }
 
+    // refund record
+    await db.query(`INSERT INTO refunds (payment_id, amount, reason) VALUES (?,?,?) [payment_id, refund_amount, refund_reason]`)
+
+    
     // 5. Update payment status to 'Refunded'
     await db.query(`
         UPDATE payments

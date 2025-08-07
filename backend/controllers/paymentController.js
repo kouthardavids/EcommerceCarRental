@@ -33,7 +33,7 @@ export const createPayment = async (req, res) => {
 // getting payments by Id
 export const getPayment = async (req, res) => {
     try{
-        const payment = await Payment.getById(req,params,id);
+        const payment = await Payment.getById(req.params.id);
 
         if (!payment || payment.length === 0){
             return res.status(404).json({
@@ -98,7 +98,7 @@ export const cancelPayment = async (req, res) => {
         }
 
         // check if payment has been approved, see if can be cancelled
-        if (!exisitingPayment[0].payment_status === 'completed'){
+        if (exisitingPayment[0].payment_status === 'completed'){
             return res.status(400).json({
                 success: false,
                 error: 'Processed payments cannot be cancelled'
@@ -106,7 +106,7 @@ export const cancelPayment = async (req, res) => {
         }
 
         // proceed with cancellation
-        const cancelledPayment = await Payment.cancel(payment_id);
+        const cancelledPayment = await Payment.cancel(paymentId);
 
         res.json({
             success: true,
@@ -121,6 +121,42 @@ export const cancelPayment = async (req, res) => {
             details: process.env.NODE_ENV === 'development' ? err.messagr: undefined
         });
     }
-
 }
+        // refunds
+    export const processRefund = async (req, res) => {
+        try {
+            const {amount, reason} = req.body;
+            const payment_id = req.params.id;
+            const refund = await Payment.processRefund(amount, reason);
+
+            res.json({
+                success: true,
+                data: {
+                    payment_id: refund.payment_id,
+                    refund_amount: refund.amount,
+                    refund_date: refund.payment_date,
+                    new_balance: refund.amount_amount,
+                    payment_status: refund.payment_status,
+                }
+            });
+        } catch (err){
+            const errorMap = {
+                'PAYMENT_NOT_FOUND': [404, 'Payment not found'],
+                'NOT_PAID': [404, 'Only processed payments can be refunded'],
+                'REFUND_PERIOD_EXPIRED': [400, 'Refund must be requested within 7 days of payment'],
+                'REFUND_AMOUNT_EXCEEDS_PAYMENT': [400, 'Refund amount exceeds payment amount']
+            };
+            const [ status, message] = errorMap[err.message] || [500, 'Failed to process refund'];
+
+            res.status(status).json({
+                success: false,
+                error: message
+            });
+
+        }
+    } 
+
+    
+
+
 
