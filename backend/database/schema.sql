@@ -102,6 +102,9 @@ CREATE TABLE refunds (
   FOREIGN KEY (payment_id) REFERENCES payments(payment_id)
 );
 
+ALTER TABLE vehicles
+DROP COLUMN image_url;
+
 INSERT INTO vehicles
 (model_name, brand, year, seats, color, description, rental_price_per_day, number_plate, is_available)
 VALUES
@@ -115,8 +118,10 @@ VALUES
 ('Range Rover Sport', 'Land Rover', 2024, 5, 'Black', 'The 2024 Range Rover Sport is a luxury SUV combining strong off-road ability with a sleek, tech-filled interior and powerful engines.', 1330.00, 'LR2024RSP', 1),
 ('Mustang', 'Ford', 2021, 4, 'Red', 'The 2021 Ford Mustang is a sporty muscle car with bold looks, powerful engines, and sharp handling.', 855.00, 'FD2021MST', 1);
 
-ALTER TABLE vehicles
-DROP COLUMN image_url;
+INSERT INTO vehicles (car_id, model_name, brand, year, seats, color, description, rental_price_per_day, number_plate, is_available) VALUES
+('Continental', 'Bentley', 2019, 4, 'Black', 'The 2019 Bentley Continental combines handcrafted luxury with powerful performance. Featuring a sleek black exterior, advanced technology, and plush seating for four, it delivers a smooth and prestigious grand touring experience.', 550.00, 'BNT2019GP', 1),
+('LX 500d', 'Lexus', 2023, 7, 'White', 'The 2023 Lexus LX 500d is a premium full-size SUV blending powerful diesel performance with modern luxury. With seating for seven, advanced safety features, and a refined interior, it is built for comfort and capability on any terrain.', 400.00, 'LX2023GP', 1),
+('S500', 'Mercedes-Benz', 2014, 5, 'Silver', 'The 2014 Mercedes-Benz S500 is a flagship luxury sedan offering refined performance, advanced technology, and exceptional comfort. With its elegant design and smooth driving dynamics, it delivers a prestigious driving experience.', 300.00, 'S5002014GP', 1);
 
 CREATE TABLE vehicle_images (
     image_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -134,7 +139,7 @@ INSERT INTO vehicle_images (car_id, image_url) VALUES
 (2, 'https://img.autotrader.co.za/22527/Crop676x507'),
 (2, 'https://img.autotrader.co.za/22528/Crop676x507'),
 (2, 'https://img.autotrader.co.za/22529/Crop676x507'),
-(2, 'hhttps://img.autotrader.co.za/22530/Crop676x507'),
+(2, 'https://img.autotrader.co.za/22530/Crop676x507'),
 
 (3, 'https://img.autotrader.co.za/38401458'),
 (3, 'https://img.autotrader.co.za/38401455/Fit508x373'),
@@ -170,3 +175,20 @@ INSERT INTO vehicle_images (car_id, image_url) VALUES
 (9, 'https://img.autotrader.co.za/39995080/Fit508x373'),
 (9, 'https://img.autotrader.co.za/39995082/Fit508x373'),
 (9, 'https://img.autotrader.co.za/39995085/Fit508x373');
+
+
+INSERT INTO vehicle_images (car_id, image_url) VALUES
+(19, 'https://img.autotrader.co.za/40080081'),
+(19, 'https://img.autotrader.co.za/40080113/Fit508x373'),
+(19, 'https://img.autotrader.co.za/40080093/Fit508x373'),
+(19, 'https://img.autotrader.co.za/40080107/Fit508x373'),
+
+(20, 'https://img.autotrader.co.za/40332462'),
+(20, 'https://img.autotrader.co.za/40332461/Fit508x373'),
+(20, 'https://img.autotrader.co.za/40332471/Fit508x373'),
+(20, 'https://img.autotrader.co.za/40332468/Fit508x373'),
+
+(21, 'https://img.autotrader.co.za/36573290'),
+(21, 'https://img.autotrader.co.za/36573291/Fit508x373'),
+(21, 'https://img.autotrader.co.za/36573294/Fit508x373'),
+(21, 'https://img.autotrader.co.za/36573293/Fit508x373');
