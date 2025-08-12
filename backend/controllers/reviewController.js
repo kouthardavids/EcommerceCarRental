@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Review from '../models/reviewModel.js';
 
 const errorMessages = {
@@ -97,3 +98,58 @@ export const deleteReview = async (req, res) => {
         });
     }
 };
+=======
+import { userCheck, vehicleCheck, insertReview, fetchReviews } from "../models/reviewModel.js";
+
+// Handle reviews when user creates one
+export const handleReview = async (req, res) => {
+  try {
+    const { user_id, car_id, rating, comment } = req.body;
+
+    // Check if the user exists
+    const user = await userCheck(user_id);
+    if (!user) {
+      return res.status(404).json({ message: "User does not exist. Cannot make a review." });
+    }
+
+    // Check if the vehicle exists
+    const vehicle = await vehicleCheck(car_id);
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle does not exist. Cannot make a review." });
+    }
+
+    // Validate rating (must be between 1 and 5)
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5." });
+    }
+
+    // Insert review into database
+    const reviewId = await insertReview(user_id, car_id, rating, comment);
+
+    return res.status(201).json({
+      message: "Review added successfully.",
+      review_id: reviewId
+    });
+
+  } catch (error) {
+    console.error("Error handling review:", error);
+    return res.status(500).json({ message: "Server error while adding review." });
+  }
+};
+
+// Get all the reviews to display on the page
+export const getReviews = async (req, res) => {
+    try {
+        const reviews = await fetchReviews();
+
+        if (!reviews || reviews.length === 0) {
+            return res.status(404).json({ message: 'No reviews found.' });
+        }
+
+        return res.status(200).json({ reviews });
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+        return res.status(500).json({ message: 'Server error while fetching reviews.' });
+    }
+};
+>>>>>>> 11e8a56 (Describe your changes here)

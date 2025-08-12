@@ -20,6 +20,7 @@ const Payment = {
         );
          return rows [0];
     },
+
     // updating the payment status
     async updateStatus(payment_id, new_status){
         await db.query('UPDATE payments SET payment_status = ? WHERE payment_id = ?', [new_status, payment_id]);
@@ -30,6 +31,7 @@ const Payment = {
         return this.getById(payment_id);
     },
 
+<<<<<<< HEAD
     // refunding payment
    
     async processRefund(payment_id, refund_reason, refund_amount = "Customer request") {
@@ -79,3 +81,8 @@ const Payment = {
 
 export default Payment;
 
+=======
+};
+
+export default Payment;
+>>>>>>> 11e8a56 (Describe your changes here)

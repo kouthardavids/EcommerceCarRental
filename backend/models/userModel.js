@@ -35,3 +35,13 @@ export const findAdmin = async(email) => {
   
   return results[0];
 };
+
+// Insert user using Google sign up
+export const insertGoogleSignup = async (google_id, full_name, email) => {
+  const [result] = await db.query(
+    `INSERT INTO users (google_id, full_name, email, password, is_google_user) VALUES (?, ?, ?, ?, ?)`,
+    [google_id, full_name, email, '', 1]
+  );
+
+  return result.insertId;
+};

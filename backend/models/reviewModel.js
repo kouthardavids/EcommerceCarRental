@@ -1,25 +1,34 @@
-import db from ('../config/db.js');
+import db from '../config/db.js';
 
-// creating review using review table from db with validation checks
-const Review = {
-    async create(user_id, car_id, rating, comment){
-        if (rating < 1 || rating > 5){
-            throw new Error('Rating must be between 1 and 5');
-        }
+// Check if the user exists when making a review
+export const userCheck = async (userId) => {
+    const [result] = await db.query(
+        `SELECT 1 FROM users WHERE user_id = ?`, [userId]
+    );
+    return result[0]
+};
 
-        // checkinf for existing user
-        const [userCheck] = await db.query('SELECT 1 FROM users WHERE user_id = ?', [user_id]);
+// Check if the vehicle exists when making a review
+export const vehicleCheck = async(carId) => {
+    const [result] = await db.query(
+        `SELECT 1 FROM vehicles WHERE car_id = ?`, [carId]
+    );
+    return result[0]
+};
 
-        if (userCheck.length === 0 ){
-            throw new Error('User does not exist');
-        }
+// Inserting review into the database
+export const insertReview = async(userId, carId, rating, comment) => {
+    const [result] = await db.query(
+        `INSERT into reviews(user_id, car_id, rating, comment) VALUES (?, ?, ?, ?)`, [userId, carId, rating, comment]
+    );
+    return result.insertId
+};
 
-        // checking for existing vehicle
-        const [vehicleCheck] = await db.query('SELECT 1 FROM vehicles WHERE car_id = ?', [car_id]);
-        if (vehicleCheck.length === 0){
-            throw new Error ('Vehicle does not exist');
-        }
+// Fetching all reviews
+export const fetchReviews = async() => {
+    const [result] = await db.query(`SELECT * FROM reviews`);
 
+<<<<<<< HEAD
         // making a review
         const [result] = await db.query(
             'INSERT INTO reviews (user_id, car_id, rating, comment) VALUES (?, ?, ?, ?)',
@@ -56,3 +65,7 @@ const Review = {
 }
 
 export default Review;
+=======
+    return result
+};
+>>>>>>> 11e8a56 (Describe your changes here)
