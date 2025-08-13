@@ -1,4 +1,4 @@
-CREATE DATABASE EcomCarRental;
+CREATE DATABASE IF NOT EXISTS EcomCarRental;
 USE EcomCarRental;
 
 CREATE TABLE admins(
@@ -10,13 +10,14 @@ CREATE TABLE admins(
   PRIMARY KEY (id)
 );
 
-INSERT INTO admins (name, email, password_hash, role) VALUES ('John Doe', 'john.doe@gmail.com', '$2b$10$qGXiab/c2IMgrOaD02q92upJD7mdDeZlZ4MB8Hz3B6xQq0wg25PTm', 'admin');
+INSERT INTO admins (name, email, password_hash, role) 
+VALUES ('John Doe', 'john.doe@gmail.com', '$2b$10$qGXiab/c2IMgrOaD02q92upJD7mdDeZlZ4MB8Hz3B6xQq0wg25PTm', 'Admin');
 
 CREATE TABLE users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   full_name VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
-  password TEXT DEFAULT NULL,
+  password_hash VARCHAR(255) DEFAULT NULL,
   phone_number VARCHAR(15),
   google_id VARCHAR(255) UNIQUE DEFAULT NULL,
   is_google_user TINYINT DEFAULT 0
@@ -31,7 +32,7 @@ CREATE TABLE vehicles (
   color VARCHAR(50),
   description TEXT,
   rental_price_per_day DECIMAL(10, 2),
-  number_plate VARCHAR(20) UNIQUE NOT NULL ,
+  number_plate VARCHAR(20) UNIQUE NOT NULL,
   is_available BOOLEAN DEFAULT TRUE
 );
 
@@ -42,14 +43,12 @@ CREATE TABLE drivers (
   password_hash VARCHAR(255) NOT NULL,
   phone_number VARCHAR(15),
   license_number VARCHAR(50) UNIQUE NOT NULL,
-  vehicle_assigned INT,  -- FK to vehicles.car_id (optional)
+  vehicle_assigned INT,
   status ENUM('Active', 'Inactive', 'Suspended') DEFAULT 'Active',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  
   FOREIGN KEY (vehicle_assigned) REFERENCES vehicles(car_id)
 );
-
 
 CREATE TABLE bookings (
   booking_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,7 +61,6 @@ CREATE TABLE bookings (
   total_price DECIMAL(10, 2) NOT NULL,
   status ENUM('Pending', 'Confirmed', 'Cancelled', 'Completed') DEFAULT 'Pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (car_id) REFERENCES vehicles(car_id)
 );
@@ -74,7 +72,6 @@ CREATE TABLE reviews (
   rating INT CHECK (rating BETWEEN 1 AND 5),
   comment TEXT,
   review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (car_id) REFERENCES vehicles(car_id)
 );
@@ -86,9 +83,8 @@ CREATE TABLE payments (
   amount DECIMAL(10,2) NOT NULL,
   payment_method ENUM('Card', 'EFT', 'Cash', 'Mobile') NOT NULL,
   payment_status ENUM('Pending', 'Paid', 'Failed') DEFAULT 'Pending',
-  payment_reference VARCHAR(100), -- e.g. Stripe/Paystack ref
+  payment_reference VARCHAR(100),
   payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
   FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
@@ -100,6 +96,13 @@ CREATE TABLE refunds (
   refund_reason VARCHAR(255),
   refund_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (payment_id) REFERENCES payments(payment_id)
+);
+
+CREATE TABLE vehicle_images (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    car_id INT NOT NULL,
+    image_url TEXT NOT NULL,
+    FOREIGN KEY (car_id) REFERENCES vehicles(car_id) ON DELETE CASCADE
 );
 
 INSERT INTO vehicles
@@ -118,13 +121,6 @@ VALUES
 ('LX 500d', 'Lexus', 2023, 7, 'White', 'The 2023 Lexus LX 500d is a premium full-size SUV blending powerful diesel performance with modern luxury. With seating for seven, advanced safety features, and a refined interior, it is built for comfort and capability on any terrain.', 400.00, 'LX2023GP', 1),
 ('S500', 'Mercedes-Benz', 2014, 5, 'Silver', 'The 2014 Mercedes-Benz S500 is a flagship luxury sedan offering refined performance, advanced technology, and exceptional comfort. With its elegant design and smooth driving dynamics, it delivers a prestigious driving experience.', 300.00, 'S5002014GP', 1);
 
-CREATE TABLE vehicle_images (
-    image_id INT AUTO_INCREMENT PRIMARY KEY,
-    car_id INT NOT NULL,
-    image_url TEXT NOT NULL,
-    FOREIGN KEY (car_id) REFERENCES vehicles(car_id) ON DELETE CASCADE
-);
-
 INSERT INTO vehicle_images (car_id, image_url) VALUES
 (1, 'https://img.autotrader.co.za/40310763'),
 (1, 'https://img.autotrader.co.za/40310765/Fit508x373'),
@@ -134,7 +130,7 @@ INSERT INTO vehicle_images (car_id, image_url) VALUES
 (2, 'https://img.autotrader.co.za/22527/Crop676x507'),
 (2, 'https://img.autotrader.co.za/22528/Crop676x507'),
 (2, 'https://img.autotrader.co.za/22529/Crop676x507'),
-(2, 'hhttps://img.autotrader.co.za/22530/Crop676x507'),
+(2, 'https://img.autotrader.co.za/22530/Crop676x507'),
 
 (3, 'https://img.autotrader.co.za/38401458'),
 (3, 'https://img.autotrader.co.za/38401455/Fit508x373'),
